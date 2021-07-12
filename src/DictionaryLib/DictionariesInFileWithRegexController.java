@@ -22,9 +22,10 @@ public class DictionariesInFileWithRegexController extends DictionariesInFileCon
     }
 
     @Override
-    public DictionaryInFileWithRegex getDictionary(String name) throws IOException {
+    public DictionaryInFile getDictionary(String name) throws IOException {
         DictionaryInFileWithRegex dictionary = new DictionaryInFileWithRegex(name);
-        dictionary.load();
+        if(!dictionary.load())
+            return null;
         return dictionary;
     }
 }

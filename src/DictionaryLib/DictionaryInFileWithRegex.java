@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 public class DictionaryInFileWithRegex extends DictionaryInFile {
 
     static final String REGEX = "@regex";
-    String regex;
-    Pattern pattern;
+    private String regex;
+    private Pattern pattern;
 
     DictionaryInFileWithRegex(String fileName, String regex) throws IOException {
         super(fileName);
@@ -23,15 +23,22 @@ public class DictionaryInFileWithRegex extends DictionaryInFile {
     @Override
     public boolean load() {
         boolean result = super.load();
-        getAndRemoveRegex(result);
+        if (result) {
+            result = getAndRemoveRegex();
+            pattern = Pattern.compile(regex);
+        }
         return result;
     }
 
-    private void getAndRemoveRegex(boolean result) {
-        if (result) {
-            regex = dict.getProperty(REGEX);
+    private boolean getAndRemoveRegex() {
+
+        regex = dict.getProperty(REGEX);
+        if (regex != null) {
+
             dict.remove(REGEX);
-        }
+            return true;
+        } else
+            return false;
     }
 
     @Override
@@ -44,11 +51,18 @@ public class DictionaryInFileWithRegex extends DictionaryInFile {
 
     @Override
     public boolean add(String word, String translate) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(word);
-        if (matcher.find())
+        if (isTrueWord(word))
             return super.add(word, translate);
         else
             return false;
+    }
+
+    public boolean isTrueWord(String word) {
+        Matcher matcher = pattern.matcher(word);
+        return matcher.find();
+    }
+
+    public String getRegex() {
+        return regex;
     }
 }

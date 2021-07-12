@@ -33,7 +33,8 @@ public class DictionariesInFileController implements DictionariesControllerInter
     @Override
     public DictionaryInFile getDictionary(String name) throws IOException {
         DictionaryInFile dictionary = new DictionaryInFile(name);
-        dictionary.load();
+        if (!dictionary.load())
+            return null;
         return dictionary;
     }
 }

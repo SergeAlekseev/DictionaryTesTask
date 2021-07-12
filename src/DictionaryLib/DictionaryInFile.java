@@ -3,14 +3,14 @@ package DictionaryLib;
 import java.io.IOException;
 import java.util.Formatter;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
-
 
 
 public class DictionaryInFile implements DictionaryInFileInterface {
 
     public static final String EMPTY_STRING = "";
-    public static final String FORMAT = "%s - %s+\n";
+    public static final String FORMAT = "%s - %s\n";
     DictionaryFileSaveLoad dictionaryFileSaveLoad;
     Properties dict;
     final String fileName;
@@ -30,13 +30,15 @@ public class DictionaryInFile implements DictionaryInFileInterface {
     @Override
     public boolean add(String word, String translate) {
         String loweWord = word.toLowerCase();
-        return dict.setProperty(loweWord, translate) != null;
+        Object isOk = dict.setProperty(loweWord, translate);
+        return isOk == null;
     }
 
     @Override
     public boolean delete(String word) {
         String loweWord = word.toLowerCase();
-        return dict.remove(loweWord) != null;
+        Object isOk = dict.remove(loweWord);
+        return isOk == null;
     }
 
     @Override
@@ -57,6 +59,10 @@ public class DictionaryInFile implements DictionaryInFileInterface {
 
         return dictionaryFileSaveLoad.load(fileName);
 
+    }
+
+    public String getName() {
+        return fileName;
     }
 
     @Override
