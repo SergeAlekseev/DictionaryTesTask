@@ -70,8 +70,9 @@ public class DictionaryInFile implements DictionaryInFileInterface {
         String text = EMPTY_STRING;
         Formatter fmt = new Formatter();
         for (Map.Entry<Object, Object> entry : dict.entrySet()) {
-            text += fmt.format(FORMAT, entry.getKey(), entry.getValue());
+            fmt.format(FORMAT, entry.getKey(), entry.getValue());
         }
+        text+=fmt.toString();
 
         return text;
     }

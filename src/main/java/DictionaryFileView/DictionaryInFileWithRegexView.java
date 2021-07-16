@@ -1,12 +1,14 @@
-import DictionaryLib.DictionaryInFile;
+package DictionaryFileView;
+
 import DictionaryLib.DictionaryInFileWithRegex;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 
 public class DictionaryInFileWithRegexView extends DictionaryInFileView {
 
-    public DictionaryInFileWithRegexView(DictionaryInFileWithRegex dictionary) throws IOException, InterruptedException {
-        super(dictionary);
+    public DictionaryInFileWithRegexView(DictionaryInFileWithRegex dictionary, BufferedReader br) throws IOException, InterruptedException {
+        super(dictionary,br);
     }
 
     @Override

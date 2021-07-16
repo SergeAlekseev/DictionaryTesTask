@@ -1,30 +1,29 @@
-import DictionaryLib.DictionariesInFileController;
-import DictionaryLib.DictionariesInFileWithRegexController;
-import DictionaryLib.DictionaryInFile;
+package DictionaryFileView;
 
+import DictionaryLib.DictionariesInFileController;
+import DictionaryLib.DictionaryInFile;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PreDestroy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class DictionariesInFileView {
 
+    @Autowired
     DictionariesInFileController dictionariesController;
+
+    @Autowired
     BufferedReader br;
 
-    public DictionariesInFileView() throws IOException, InterruptedException {
-        initController();
-        start();
-    }
-
-    protected void initController() {
-        dictionariesController = new DictionariesInFileController();
+    public DictionariesInFileView()  {
     }
 
     public void start() throws IOException, InterruptedException {
         Boolean run = true;
         while (run) {
             clearComandLine();
-            br = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Это приложение работает со словарями\n" +
                     "Введите номер пункта меню или exit для выхода\n" +
                     "1. Создать и открыть словарь\n" +
@@ -121,6 +120,7 @@ public class DictionariesInFileView {
     }
 
     protected void dictionaryMenu(DictionaryInFile dictionary) throws IOException, InterruptedException {
-        new DictionaryInFileView(dictionary);
+        new DictionaryInFileView(dictionary,br);
     }
+
 }

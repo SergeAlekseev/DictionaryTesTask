@@ -1,4 +1,8 @@
+package DictionaryFileView;
+
 import DictionaryLib.DictionaryInFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,11 +10,14 @@ import java.io.InputStreamReader;
 
 public class DictionaryInFileView {
 
+    @Autowired
     BufferedReader br;
+
     DictionaryInFile dictionary;
 
-    public DictionaryInFileView(DictionaryInFile dictionary) throws IOException, InterruptedException {
+    public DictionaryInFileView(DictionaryInFile dictionary,BufferedReader br) throws IOException, InterruptedException {
         this.dictionary = dictionary;
+        this.br = br;
         start();
     }
 
@@ -18,7 +25,6 @@ public class DictionaryInFileView {
         Boolean run = true;
         while (run) {
             clearComandLine();
-            br = new BufferedReader(new InputStreamReader(System.in));
             System.out.format("Работа со словарем %s\n" +
                     "Введите номер пункта меню или exit для выхода\n" +
                     "1. Найти слово\n" +
@@ -26,7 +32,7 @@ public class DictionaryInFileView {
                     "3. Удалить слово\n" +
                     "4. Просмотреть все слова\n" +
                     "5. Сохранить словарь\n" +
-                    "6. Загрузить словарь заного\n", dictionary.getName());
+                    "6. Загрузить словарь заново\n", dictionary.getName());
             switch (br.readLine()) {
                 case "1":
                     search();

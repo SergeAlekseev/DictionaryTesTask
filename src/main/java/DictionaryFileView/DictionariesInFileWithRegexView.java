@@ -1,21 +1,16 @@
-import DictionaryLib.DictionariesInFileController;
+package DictionaryFileView;
+
 import DictionaryLib.DictionariesInFileWithRegexController;
 import DictionaryLib.DictionaryInFile;
 import DictionaryLib.DictionaryInFileWithRegex;
+import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.regex.PatternSyntaxException;
 
-public class DictionariesInFileWithRegexView extends DictionariesInFileView {
+public abstract class DictionariesInFileWithRegexView extends DictionariesInFileView {
 
-
-    public DictionariesInFileWithRegexView() throws IOException, InterruptedException {
-    }
-
-    @Override
-    protected void initController() {
-        dictionariesController = new DictionariesInFileWithRegexController();
-    }
 
     @Override
     protected void initDict(String dictionaryName) throws IOException, InterruptedException {
@@ -30,9 +25,12 @@ public class DictionariesInFileWithRegexView extends DictionariesInFileView {
         }
     }
 
+    @Override
     protected void dictionaryMenu(DictionaryInFile dictionary) throws IOException, InterruptedException {
-        new DictionaryInFileWithRegexView((DictionaryInFileWithRegex)dictionary);
+        getDictView(dictionary, br);
     }
+
+    abstract DictionaryInFileWithRegexView getDictView(DictionaryInFile dictionary, BufferedReader br) throws IOException, InterruptedException;
 
 
 }
