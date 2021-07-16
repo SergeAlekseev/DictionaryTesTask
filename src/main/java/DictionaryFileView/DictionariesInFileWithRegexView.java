@@ -27,10 +27,10 @@ public abstract class DictionariesInFileWithRegexView extends DictionariesInFile
 
     @Override
     protected void dictionaryMenu(DictionaryInFile dictionary) throws IOException, InterruptedException {
-        getDictView(dictionary, br);
+        getDictView(dictionary);
     }
 
-    abstract DictionaryInFileWithRegexView getDictView(DictionaryInFile dictionary, BufferedReader br) throws IOException, InterruptedException;
+    abstract DictionaryInFileWithRegexView getDictView(DictionaryInFile dictionary) throws IOException, InterruptedException;
 
 
 }

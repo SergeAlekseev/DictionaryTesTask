@@ -18,16 +18,16 @@ public class Main {
     @Bean
     @Scope("prototype")
     @Lazy
-    DictionaryInFileWithRegexView dictView(DictionaryInFile dictionary, BufferedReader br) throws IOException, InterruptedException {
-       return new DictionaryInFileWithRegexView((DictionaryInFileWithRegex) dictionary, br);
+    DictionaryInFileWithRegexView dictView(DictionaryInFile dictionary) throws IOException, InterruptedException {
+       return new DictionaryInFileWithRegexView((DictionaryInFileWithRegex) dictionary, bufferedReader());
     }
 
     @Bean
     DictionariesInFileWithRegexView dictsView() throws IOException, InterruptedException {
        return new DictionariesInFileWithRegexView() {
            @Override
-           DictionaryInFileWithRegexView getDictView(DictionaryInFile dictionary, BufferedReader br) throws IOException, InterruptedException {
-               return dictView(dictionary, br);
+           DictionaryInFileWithRegexView getDictView(DictionaryInFile dictionary) throws IOException, InterruptedException {
+               return dictView(dictionary);
            }
        };
     }
