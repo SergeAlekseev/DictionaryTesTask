@@ -30,7 +30,7 @@ public abstract class DictionariesInFileWithRegexView extends DictionariesInFile
         getDictView(dictionary);
     }
 
-    abstract DictionaryInFileWithRegexView getDictView(DictionaryInFile dictionary) throws IOException, InterruptedException;
+    public abstract DictionaryInFileWithRegexView getDictView(DictionaryInFile dictionary) throws IOException, InterruptedException;
 
 
 }
