@@ -15,7 +15,7 @@
     <script type="text/javascript">
 
 
-        function remove(selectID) {
+        function remove(selectID,transID) {
             let mdw = {}
             mdw["idWord"] = document.getElementById(selectID).value;
 
@@ -28,6 +28,7 @@
                 success: function (data) {
                     document.getElementById(data).remove();
                     alert("deleted" + data);
+                    changeSelect(selectID, transID);
                 }
             });
         }
@@ -157,7 +158,7 @@
         </c:forEach>
     </select>
     <br>
-    <button onclick="remove('select1')">Remove</button>
+    <button onclick="remove('select1','trans1')">Remove</button>
     <br>
     <div id="trans1"></div>
 
@@ -188,7 +189,7 @@
         </c:forEach>
     </select>
     <br>
-    <button onclick="remove('select2')">Remove</button>
+    <button onclick="remove('select2','trans2')">Remove</button>
     <br>
     <div id="trans2"></div>
 

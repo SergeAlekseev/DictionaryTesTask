@@ -124,10 +124,13 @@ public class DictionariesController {
 
     @PostMapping("/addTranslate")
     @ResponseBody
-    public String addTranslate(@RequestBody ModelNewTranslate modelNewTranslate, Model model) {
+    public ModelTranslate addTranslate(@RequestBody ModelNewTranslate modelNewTranslate, Model model) {
         Translate translate = new Translate(modelNewTranslate, wordRepository.getById(modelNewTranslate.getIdWord()));
         translateRepository.saveAndFlush(translate);
-        return "Added " + modelNewTranslate.getTranslate();
+        ModelTranslate modelTranslate = new ModelTranslate();
+        modelTranslate.setTranslate(modelNewTranslate.getTranslate());
+        modelTranslate.setIdTranslate(translate.getId());
+        return modelTranslate;
     }
 
 

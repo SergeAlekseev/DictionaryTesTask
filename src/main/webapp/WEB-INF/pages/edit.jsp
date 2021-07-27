@@ -28,6 +28,7 @@
                 dataType: 'text',
                 success: function (data) {
                     alert(data);
+                    location.reload()
                 }
             });
         }
@@ -43,9 +44,20 @@
                 contentType: 'application/json',
                 url: "/bibl/addTranslate",
                 data: JSON.stringify(mnt),
-                dataType: 'text',
+                dataType: 'json',
                 success: function (data) {
-                    alert(data);
+                    let el = document.createElement('p');
+                    let delBtn = document.createElement('button');
+                    el.textContent = data.translate
+                    delBtn.textContent = 'Delete '+data.translate;
+
+                    delBtn.onclick = delTranslate(data.idTranslate);
+                    el.setAttribute('id', data.idTranslate + 'el')
+                    delBtn.setAttribute('id', data.idTranslate + 'btn')
+                    let elementTrans = document.getElementById('translates');
+
+                    elementTrans.appendChild(delBtn);
+                    elementTrans.appendChild(el);
                 }
             });
         }
