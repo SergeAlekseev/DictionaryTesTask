@@ -116,7 +116,7 @@ public class DictionariesController {
         if (matcher.find()) {
             word = new Word(modelNewWord);
             wordRepository.saveAndFlush(word);
-            return "Added" + modelNewWord.getWord();
+            return "Added " + modelNewWord.getWord();
         }
 
         return "Not add";
@@ -124,10 +124,10 @@ public class DictionariesController {
 
     @PostMapping("/addTranslate")
     @ResponseBody
-    public String addWord(@RequestBody ModelNewTranslate modelNewTranslate, Model model) {
+    public String addTranslate(@RequestBody ModelNewTranslate modelNewTranslate, Model model) {
         Translate translate = new Translate(modelNewTranslate, wordRepository.getById(modelNewTranslate.getIdWord()));
         translateRepository.saveAndFlush(translate);
-        return "Added"+modelNewTranslate.getTranslate();
+        return "Added " + modelNewTranslate.getTranslate();
     }
 
 

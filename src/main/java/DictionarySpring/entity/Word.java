@@ -1,8 +1,6 @@
 package DictionarySpring.entity;
 
 import DictionarySpring.model.ModelNewWord;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,18 +18,18 @@ public class Word {
     @Column(name = "id_dictionary")
     private Long dictId;
 
-    @OneToMany(mappedBy = "word",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Translate> translates;
 
-    public Word(){
+    public Word() {
 
     }
 
     public Word(ModelNewWord modelNewWord) {
-        word=modelNewWord.getWord();
+        word = modelNewWord.getWord();
         dictId = modelNewWord.getIdDict();
         translates = new ArrayList<>();
-        translates.add(new Translate(modelNewWord.getTranslate(),this));
+        translates.add(new Translate(modelNewWord.getTranslate(), this));
     }
 
     public void setDictId(Long dictId) {

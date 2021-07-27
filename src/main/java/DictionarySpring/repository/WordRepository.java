@@ -13,7 +13,4 @@ public interface WordRepository extends JpaRepository<Word,Long> {
     public List<Word> findAllByWord(String word);
 
     public List<Word> findAllByWordAndDictId(String word,Long dictId);
-
-    public Word getByIdAndDictId(Long wordId, Long dictId);
-
 }
