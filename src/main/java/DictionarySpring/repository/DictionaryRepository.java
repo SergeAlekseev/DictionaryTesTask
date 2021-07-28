@@ -1,10 +1,27 @@
 package DictionarySpring.repository;
 
 import DictionarySpring.entity.Dictionary;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.hibernate.LockOptions;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface DictionaryRepository extends JpaRepository<Dictionary,Long> {
+@Transactional
+public class DictionaryRepository {
+
+    private final SessionFactory sessionFactory;
+
+    public DictionaryRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public Dictionary findDictById(Long id) {
+        Session session = this.sessionFactory.getCurrentSession();
+        return session.get(Dictionary.class, id);
+    }
+
 }

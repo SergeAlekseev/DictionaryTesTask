@@ -1,7 +1,11 @@
 package DictionarySpring.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -9,19 +13,19 @@ public class Dictionary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
 
     private String regex;
 
-    @OneToMany
-    @JoinColumn(name = "id_dictionary")
-    private List<Word> words;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "dictionary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Word> words;
 
-    public List<Word> getWords() {
+    public Set<Word> getWords() {
         return words;
     }
 
-    public void setWords(List<Word> words) {
+    public void setWords(Set<Word> words) {
         this.words = words;
     }
 

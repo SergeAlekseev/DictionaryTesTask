@@ -10,6 +10,7 @@ import DictionarySpring.model.ModelWord;
 import DictionarySpring.repository.DictionaryRepository;
 import DictionarySpring.repository.TranslateRepository;
 import DictionarySpring.repository.WordRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,9 @@ public class DictionariesController {
 
     private final DictionaryRepository dictionaryRepository;
     private final WordRepository wordRepository;
+
     private final TranslateRepository translateRepository;
+
 
     public DictionariesController(DictionaryRepository dictionaryRepository, WordRepository wordRepository, TranslateRepository translateRepository) {
         this.dictionaryRepository = dictionaryRepository;
@@ -35,14 +38,15 @@ public class DictionariesController {
 
     @GetMapping("/edit/{id}")
     public String getEditPage(@PathVariable Long id, Model model) {
-        model.addAttribute("dict", dictionaryRepository.getById(id));
+        Dictionary dictionary = dictionaryRepository.findDictById(id);
+        model.addAttribute("dict", dictionary);
         return "edit";
     }
 
     @GetMapping("/dicts")
     public String getDictionaries(Model model) {
-        model.addAttribute("dict1", dictionaryRepository.getById(2L));
-        model.addAttribute("dict2", dictionaryRepository.getById(3L));
+        model.addAttribute("dict1", dictionaryRepository.findDictById(2L));
+        model.addAttribute("dict2", dictionaryRepository.findDictById(3L));
 
         return "dictionaries";
     }
@@ -50,21 +54,25 @@ public class DictionariesController {
     @DeleteMapping("/delete")
     @ResponseBody
     public Long deleteWord(@RequestBody ModelWord modelWord, Model model) {
-        wordRepository.deleteById(modelWord.getIdWord());
-        return modelWord.getIdWord();
+        if (wordRepository.deleteWord(modelWord.getIdWord()))
+            return modelWord.getIdWord();
+        else
+            return -1L;
     }
 
     @DeleteMapping("/deleteTrans")
     @ResponseBody
     public Long deleteTrans(@RequestBody ModelTranslate modelTranslate, Model model) {
-        translateRepository.deleteById(modelTranslate.getIdTranslate());
-        return modelTranslate.getIdTranslate();
+        if (translateRepository.deleteById(modelTranslate.getIdTranslate()))
+            return modelTranslate.getIdTranslate();
+        else
+            return -1L;
     }
 
     @GetMapping("/translates/{id}")
     @ResponseBody
-    public List<Translate> getTranslateWord(@PathVariable Long id, Model model) {
-        return wordRepository.getById(id).getTranslates();
+    public Set<Translate> getTranslateWord(@PathVariable Long id, Model model) {
+        return wordRepository.findWordById(id).getTranslates();
     }
 
     @GetMapping("/searchAllByWord/{word}")
@@ -99,7 +107,7 @@ public class DictionariesController {
         Word word;
         for (Translate trans : translates) {
             word = trans.getWord();
-            if (word.getDictId().equals(dictId))
+            if (word.getDictionary().getId().equals(dictId))
                 words.add(word);
         }
 
@@ -109,13 +117,11 @@ public class DictionariesController {
     @PostMapping("/addWord")
     @ResponseBody
     public String addWord(@RequestBody ModelNewWord modelNewWord, Model model) {
-        Dictionary dictionary = dictionaryRepository.getById(modelNewWord.getIdDict());
+        Dictionary dictionary = dictionaryRepository.findDictById(modelNewWord.getIdDict());
         Pattern pattern = Pattern.compile(dictionary.getRegex());
         Matcher matcher = pattern.matcher(modelNewWord.getWord());
-        Word word = null;
         if (matcher.find()) {
-            word = new Word(modelNewWord);
-            wordRepository.saveAndFlush(word);
+            wordRepository.saveAndFlush(new Word(modelNewWord, dictionary));
             return "Added " + modelNewWord.getWord();
         }
 
@@ -125,7 +131,7 @@ public class DictionariesController {
     @PostMapping("/addTranslate")
     @ResponseBody
     public ModelTranslate addTranslate(@RequestBody ModelNewTranslate modelNewTranslate, Model model) {
-        Translate translate = new Translate(modelNewTranslate, wordRepository.getById(modelNewTranslate.getIdWord()));
+        Translate translate = new Translate(modelNewTranslate, wordRepository.findWordById(modelNewTranslate.getIdWord()));
         translateRepository.saveAndFlush(translate);
         ModelTranslate modelTranslate = new ModelTranslate();
         modelTranslate.setTranslate(modelNewTranslate.getTranslate());

@@ -1,43 +1,50 @@
 package DictionarySpring.entity;
 
 import DictionarySpring.model.ModelNewWord;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Word {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
 
     private String word;
 
-    @Column(name = "id_dictionary")
-    private Long dictId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "id_dictionary")
+    private Dictionary dictionary;
 
-    @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Translate> translates;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Translate> translates;
 
     public Word() {
 
     }
 
-    public Word(ModelNewWord modelNewWord) {
+    public Word(ModelNewWord modelNewWord, Dictionary dictionary) {
         word = modelNewWord.getWord();
-        dictId = modelNewWord.getIdDict();
-        translates = new ArrayList<>();
+        this.dictionary = dictionary;
+        translates = new HashSet<>();
         translates.add(new Translate(modelNewWord.getTranslate(), this));
     }
 
-    public void setDictId(Long dictId) {
-        this.dictId = dictId;
+    public void setDictionary(Dictionary dictionary) {
+        this.dictionary = dictionary;
     }
 
-    public Long getDictId() {
-        return dictId;
+    public Dictionary getDictionary() {
+        return dictionary;
     }
 
     public void setId(Long id) {
@@ -48,11 +55,11 @@ public class Word {
         return id;
     }
 
-    public List<Translate> getTranslates() {
+    public Set<Translate> getTranslates() {
         return translates;
     }
 
-    public void setTranslates(List<Translate> translates) {
+    public void setTranslates(Set<Translate> translates) {
         this.translates = translates;
     }
 
