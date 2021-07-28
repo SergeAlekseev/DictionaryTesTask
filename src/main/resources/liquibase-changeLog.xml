@@ -26,4 +26,6 @@
         </rollback>
     </changeSet>
 
+    <include file="db/liquibaseCild.xml"/>
+
 </databaseChangeLog>
