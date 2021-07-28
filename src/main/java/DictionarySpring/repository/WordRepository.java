@@ -46,15 +46,18 @@ public class WordRepository {
 
     public List<Word> findAllByWord(String word) {
         Session session = sessionFactory.getCurrentSession();
+
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Word> cq = cb.createQuery(Word.class);
         Root<Word> from = cq.from(Word.class);
+
         cq.select(from).where(cb.equal(from.get("word"), word));
         Query<Word> query = session.createQuery(cq);
         return query.getResultList();
     }
 
     public List<Word> findAllByWordAndDictId(String word, Long dictId) {
+
         Session session = sessionFactory.getCurrentSession();
 
         //что-то не то
@@ -63,6 +66,7 @@ public class WordRepository {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Word> cq = cb.createQuery(Word.class);
         Root<Word> from = cq.from(Word.class);
+
         Predicate[] predicates = new Predicate[2];
         predicates[0] = cb.equal(from.get("word"),word);
         predicates[1] = cb.equal(from.get("dictionary"),dictionary);
