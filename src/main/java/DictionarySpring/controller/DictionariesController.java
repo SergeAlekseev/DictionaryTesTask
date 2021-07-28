@@ -1,17 +1,17 @@
 package DictionarySpring.controller;
 
-import DictionarySpring.entity.Dictionary;
-import DictionarySpring.entity.Translate;
-import DictionarySpring.entity.Word;
-import DictionarySpring.model.ModelNewTranslate;
-import DictionarySpring.model.ModelNewWord;
-import DictionarySpring.model.ModelTranslate;
-import DictionarySpring.model.ModelWord;
+import DictionarySpring.entity.DictionaryEntity;
+import DictionarySpring.entity.TranslateEntity;
+import DictionarySpring.entity.WordEntity;
+import DictionarySpring.model.NewTranslateModel;
+import DictionarySpring.model.NewWordModel;
+import DictionarySpring.model.TranslateModel;
+import DictionarySpring.model.WordModel;
 import DictionarySpring.repository.DictionaryRepository;
 import DictionarySpring.repository.TranslateRepository;
 import DictionarySpring.repository.WordRepository;
+import DictionarySpring.service.DictionariesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,123 +20,85 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-@Controller
+@RestController
 @RequestMapping("/bibl")
 public class DictionariesController {
 
-    private final DictionaryRepository dictionaryRepository;
-    private final WordRepository wordRepository;
 
-    private final TranslateRepository translateRepository;
+    private final DictionariesService dictionariesService;
 
 
-    public DictionariesController(DictionaryRepository dictionaryRepository, WordRepository wordRepository, TranslateRepository translateRepository) {
-        this.dictionaryRepository = dictionaryRepository;
-        this.wordRepository = wordRepository;
-        this.translateRepository = translateRepository;
+    public DictionariesController(DictionariesService dictionariesService) {
+        this.dictionariesService = dictionariesService;
     }
 
-    @GetMapping("/edit/{id}")
-    public String getEditPage(@PathVariable Long id, Model model) {
-        Dictionary dictionary = dictionaryRepository.findDictById(id);
-        model.addAttribute("dict", dictionary);
-        return "edit";
+    @GetMapping("/dict/{id}")
+    @ResponseBody
+    public DictionaryEntity getDict(@PathVariable Long id, Model model) {
+        return dictionariesService.getDict(id);
     }
 
     @GetMapping("/dicts")
-    public String getDictionaries(Model model) {
-        model.addAttribute("dict1", dictionaryRepository.findDictById(2L));
-        model.addAttribute("dict2", dictionaryRepository.findDictById(3L));
-
-        return "dictionaries";
+    @ResponseBody
+    public List<DictionaryEntity> getDictionaries(Model model) {
+        return dictionariesService.getDictionaries();
     }
 
     @DeleteMapping("/delete")
     @ResponseBody
-    public Long deleteWord(@RequestBody ModelWord modelWord, Model model) {
-        if (wordRepository.deleteWord(modelWord.getIdWord()))
-            return modelWord.getIdWord();
-        else
-            return -1L;
+    public Long deleteWord(@RequestBody WordModel wordModel, Model model) {
+        return dictionariesService.deleteWord(wordModel);
     }
 
     @DeleteMapping("/deleteTrans")
     @ResponseBody
-    public Long deleteTrans(@RequestBody ModelTranslate modelTranslate, Model model) {
-        if (translateRepository.deleteById(modelTranslate.getIdTranslate()))
-            return modelTranslate.getIdTranslate();
-        else
-            return -1L;
+    public Long deleteTrans(@RequestBody TranslateModel translateModel, Model model) {
+        return dictionariesService.deleteTrans(translateModel);
     }
 
     @GetMapping("/translates/{id}")
     @ResponseBody
-    public Set<Translate> getTranslateWord(@PathVariable Long id, Model model) {
-        return wordRepository.findWordById(id).getTranslates();
+    public Set<TranslateEntity> getTranslateWord(@PathVariable Long id, Model model) {
+        return dictionariesService.getTranslateWord(id);
     }
 
     @GetMapping("/searchAllByWord/{word}")
     @ResponseBody
-    public List<Word> getWordsByWord(@PathVariable String word, Model model) {
-        return wordRepository.findAllByWord(word);
+    public List<WordEntity> getWordsByWord(@PathVariable String word, Model model) {
+        return dictionariesService.getWordsByWord(word);
     }
 
-    @GetMapping("/searchAllByWord/{dictId}/{word}")
+    @GetMapping("/searchByWord/{dictId}/{word}")
     @ResponseBody
-    public List<Word> getWordsByWord(@PathVariable Long dictId, @PathVariable String word, Model model) {
-        return wordRepository.findAllByWordAndDictId(word, dictId);
+    public List<WordEntity> getWordsByWord(@PathVariable Long dictId, @PathVariable String word, Model model) {
+        return dictionariesService.getWordsByWord(dictId, word);
     }
 
     @GetMapping("/searchAllByTranslate/{translate}")
     @ResponseBody
-    public Set<Word> getWordsByTranslate(@PathVariable String translate, Model model) {
-        List<Translate> translates = translateRepository.findAllByTranslate(translate);
-        Set<Word> words = new HashSet<>();
-        for (Translate trans : translates) {
-            words.add(trans.getWord());
-        }
+    public Set<WordEntity> getWordsByTranslate(@PathVariable String translate, Model model) {
+        return dictionariesService.getWordsByTranslate(translate);
 
-        return words;
     }
 
-    @GetMapping("/searchAllByTranslate/{dictId}/{translate}")
+    @GetMapping("/searchByTranslate/{dictId}/{translate}")
     @ResponseBody
-    public Set<Word> getWordsByTranslate(@PathVariable Long dictId, @PathVariable String translate, Model model) {
-        List<Translate> translates = translateRepository.findAllByTranslate(translate);
-        Set<Word> words = new HashSet<>();
-        Word word;
-        for (Translate trans : translates) {
-            word = trans.getWord();
-            if (word.getDictionary().getId().equals(dictId))
-                words.add(word);
-        }
+    public Set<WordEntity> getWordsByTranslate(@PathVariable Long dictId, @PathVariable String translate, Model model) {
+        return dictionariesService.getWordsByTranslate(dictId, translate);
 
-        return words;
     }
 
     @PostMapping("/addWord")
     @ResponseBody
-    public String addWord(@RequestBody ModelNewWord modelNewWord, Model model) {
-        Dictionary dictionary = dictionaryRepository.findDictById(modelNewWord.getIdDict());
-        Pattern pattern = Pattern.compile(dictionary.getRegex());
-        Matcher matcher = pattern.matcher(modelNewWord.getWord());
-        if (matcher.find()) {
-            wordRepository.saveAndFlush(new Word(modelNewWord, dictionary));
-            return "Added " + modelNewWord.getWord();
-        }
+    public WordEntity addWord(@RequestBody NewWordModel newWordModel, Model model) {
+        return dictionariesService.addWord(newWordModel);
 
-        return "Not add";
     }
 
     @PostMapping("/addTranslate")
     @ResponseBody
-    public ModelTranslate addTranslate(@RequestBody ModelNewTranslate modelNewTranslate, Model model) {
-        Translate translate = new Translate(modelNewTranslate, wordRepository.findWordById(modelNewTranslate.getIdWord()));
-        translateRepository.saveAndFlush(translate);
-        ModelTranslate modelTranslate = new ModelTranslate();
-        modelTranslate.setTranslate(modelNewTranslate.getTranslate());
-        modelTranslate.setIdTranslate(translate.getId());
-        return modelTranslate;
+    public TranslateModel addTranslate(@RequestBody NewTranslateModel newTranslateModel, Model model) {
+        return dictionariesService.addTranslate(newTranslateModel);
     }
 
 

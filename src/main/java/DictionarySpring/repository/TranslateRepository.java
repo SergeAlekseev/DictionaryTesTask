@@ -1,7 +1,6 @@
 package DictionarySpring.repository;
 
-import DictionarySpring.entity.Translate;
-import DictionarySpring.entity.Word;
+import DictionarySpring.entity.TranslateEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -22,22 +21,22 @@ public class TranslateRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Translate> findAllByTranslate(String translate) {
+    public List<TranslateEntity> findAllByTranslate(String translate) {
         Session session = sessionFactory.getCurrentSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Translate> cq = cb.createQuery(Translate.class);
-        Root<Translate> from = cq.from(Translate.class);
+        CriteriaQuery<TranslateEntity> cq = cb.createQuery(TranslateEntity.class);
+        Root<TranslateEntity> from = cq.from(TranslateEntity.class);
         cq.select(from).where(cb.equal(from.get("translate"), translate));
-        Query<Translate> query = session.createQuery(cq);
+        Query<TranslateEntity> query = session.createQuery(cq);
         return query.getResultList();
     }
 
     public boolean deleteById(Long idTranslate) {
         Session session = sessionFactory.getCurrentSession();
         try {
-            Translate translate = session.load(Translate.class, idTranslate);
-            translate.getWord().getTranslates().remove(translate);
-            session.delete(translate);
+            TranslateEntity translateEntity = session.load(TranslateEntity.class, idTranslate);
+            translateEntity.getWord().getTranslates().remove(translateEntity);
+            session.delete(translateEntity);
             session.flush();
             return true;
         } catch (Exception e) {
@@ -45,9 +44,9 @@ public class TranslateRepository {
         }
     }
 
-    public void saveAndFlush(Translate translate) {
+    public void saveAndFlush(TranslateEntity translateEntity) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(translate);
+        session.save(translateEntity);
         session.flush();
     }
 }

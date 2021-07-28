@@ -1,12 +1,12 @@
 package DictionarySpring.entity;
 
-import DictionarySpring.model.ModelNewTranslate;
+import DictionarySpring.model.NewTranslateModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
 @Entity
-public class Translate {
+public class TranslateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,33 +18,33 @@ public class Translate {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "id_word")
-    private Word word;
+    private WordEntity wordEntity;
 
 
 
-    public Translate(String translate, Word word) {
+    public TranslateEntity(String translate, WordEntity wordEntity) {
         this.translate = translate;
-        this.word = word;
+        this.wordEntity = wordEntity;
     }
 
-    public Translate(ModelNewTranslate modelNewTranslate, Word word) {
-        translate = modelNewTranslate.getTranslate();
-        this.word = word;
+    public TranslateEntity(NewTranslateModel newTranslateModel, WordEntity wordEntity) {
+        translate = newTranslateModel.getTranslate();
+        this.wordEntity = wordEntity;
     }
 
-    public Translate() {
+    public TranslateEntity() {
 
     }
 
-    public void setWord(Word word) {
-        this.word = word;
+    public void setWord(WordEntity wordEntity) {
+        this.wordEntity = wordEntity;
     }
 
-    public Word getWord() {
-        return word;
+    public WordEntity getWord() {
+        return wordEntity;
     }
 
-    public Translate(String translate) {
+    public TranslateEntity(String translate) {
         this.translate = translate;
     }
 

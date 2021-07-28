@@ -1,13 +1,16 @@
 package DictionarySpring.repository;
 
-import DictionarySpring.entity.Dictionary;
-import org.hibernate.LockOptions;
+import DictionarySpring.entity.DictionaryEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -19,9 +22,17 @@ public class DictionaryRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public Dictionary findDictById(Long id) {
+    public DictionaryEntity findDictById(Long id) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.get(Dictionary.class, id);
+        return session.get(DictionaryEntity.class, id);
     }
 
+    public List<DictionaryEntity> findDicts() {
+        Session session = this.sessionFactory.getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<DictionaryEntity> cq = cb.createQuery(DictionaryEntity.class);
+        Root<DictionaryEntity> from = cq.from(DictionaryEntity.class);
+        Query<DictionaryEntity> query = session.createQuery(cq.select(from));
+        return query.getResultList();
+    }
 }

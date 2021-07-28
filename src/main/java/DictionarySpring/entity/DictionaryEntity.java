@@ -1,15 +1,11 @@
 package DictionarySpring.entity;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 
 @Entity
-public class Dictionary {
+public class DictionaryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,14 +15,14 @@ public class Dictionary {
     private String regex;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "dictionary", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Word> words;
+    private Set<WordEntity> wordEntities;
 
-    public Set<Word> getWords() {
-        return words;
+    public Set<WordEntity> getWords() {
+        return wordEntities;
     }
 
-    public void setWords(Set<Word> words) {
-        this.words = words;
+    public void setWords(Set<WordEntity> wordEntities) {
+        this.wordEntities = wordEntities;
     }
 
     public void setRegex(String regex) {

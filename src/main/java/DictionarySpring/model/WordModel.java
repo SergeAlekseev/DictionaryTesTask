@@ -1,14 +1,14 @@
 package DictionarySpring.model;
 
 
-public class ModelWord {
+public class WordModel {
     private Long idWord;
     private Long idDict;
 
-    public ModelWord() {
+    public WordModel() {
     }
 
-    public ModelWord(Long dictId) {
+    public WordModel(Long dictId) {
         idDict=dictId;
     }
 

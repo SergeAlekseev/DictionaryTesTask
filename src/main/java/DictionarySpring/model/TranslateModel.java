@@ -1,6 +1,6 @@
 package DictionarySpring.model;
 
-public class ModelTranslate {
+public class TranslateModel {
     private Long idTranslate;
     private String translate;
 
