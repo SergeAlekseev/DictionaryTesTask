@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "word")
 public class WordEntity {
 
     @Id
@@ -20,10 +21,10 @@ public class WordEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "id_dictionary")
-    private DictionaryEntity dictionaryEntity;
+    private DictionaryEntity dictionary;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TranslateEntity> translateEntities;
+    private Set<TranslateEntity> translates;
 
     public WordEntity() {
 
@@ -31,17 +32,17 @@ public class WordEntity {
 
     public WordEntity(NewWordModel newWordModel, DictionaryEntity dictionaryEntity) {
         word = newWordModel.getWord();
-        this.dictionaryEntity = dictionaryEntity;
-        translateEntities = new HashSet<>();
-        translateEntities.add(new TranslateEntity(newWordModel.getTranslate(), this));
+        this.dictionary = dictionaryEntity;
+        translates = new HashSet<>();
+        translates.add(new TranslateEntity(newWordModel.getTranslate(), this));
     }
 
     public void setDictionary(DictionaryEntity dictionaryEntity) {
-        this.dictionaryEntity = dictionaryEntity;
+        this.dictionary = dictionaryEntity;
     }
 
     public DictionaryEntity getDictionary() {
-        return dictionaryEntity;
+        return dictionary;
     }
 
     public void setId(Long id) {
@@ -53,11 +54,11 @@ public class WordEntity {
     }
 
     public Set<TranslateEntity> getTranslates() {
-        return translateEntities;
+        return translates;
     }
 
     public void setTranslates(Set<TranslateEntity> translateEntities) {
-        this.translateEntities = translateEntities;
+        this.translates = translateEntities;
     }
 
     public void setWord(String word) {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "translate")
 public class TranslateEntity {
 
     @Id
@@ -18,18 +19,18 @@ public class TranslateEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "id_word")
-    private WordEntity wordEntity;
+    private WordEntity word;
 
 
 
     public TranslateEntity(String translate, WordEntity wordEntity) {
         this.translate = translate;
-        this.wordEntity = wordEntity;
+        this.word = wordEntity;
     }
 
     public TranslateEntity(NewTranslateModel newTranslateModel, WordEntity wordEntity) {
         translate = newTranslateModel.getTranslate();
-        this.wordEntity = wordEntity;
+        this.word = wordEntity;
     }
 
     public TranslateEntity() {
@@ -37,11 +38,11 @@ public class TranslateEntity {
     }
 
     public void setWord(WordEntity wordEntity) {
-        this.wordEntity = wordEntity;
+        this.word = wordEntity;
     }
 
     public WordEntity getWord() {
-        return wordEntity;
+        return word;
     }
 
     public TranslateEntity(String translate) {

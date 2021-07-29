@@ -5,6 +5,7 @@ import java.util.Set;
 
 
 @Entity
+@Table(name = "dictionary")
 public class DictionaryEntity {
 
     @Id
@@ -15,14 +16,14 @@ public class DictionaryEntity {
     private String regex;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "dictionary", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<WordEntity> wordEntities;
+    private Set<WordEntity> words;
 
     public Set<WordEntity> getWords() {
-        return wordEntities;
+        return words;
     }
 
-    public void setWords(Set<WordEntity> wordEntities) {
-        this.wordEntities = wordEntities;
+    public void setWords(Set<WordEntity> words) {
+        this.words = words;
     }
 
     public void setRegex(String regex) {
